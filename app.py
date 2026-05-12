@@ -381,7 +381,9 @@ services_clients_df = services_engine[["client_name", "client_key"]].drop_duplic
 services_keys = set(services_clients_df["client_key"])
 
 non_billable_rows = services_engine[services_engine["is_non_billable"]].copy()
-success_rows = services_engine[services_engine["is_successful_engagement_procedure"] & (~services_engine["is_no_show_cancel"])].copy()
+success_rows = services_engine[
+    services_engine["is_successful_engagement_procedure"]
+].copy()
 billable_rows = services_engine[services_engine["is_billable"]].copy()
 no_show_cancel_rows = services_engine[services_engine["is_no_show_cancel"]].copy()
 
