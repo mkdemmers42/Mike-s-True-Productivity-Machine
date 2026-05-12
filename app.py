@@ -385,6 +385,20 @@ success_rows = services_engine[
     services_engine["is_successful_engagement_procedure"]
 ].copy()
 billable_rows = services_engine[services_engine["is_billable"]].copy()
+
+services_engine["Status Clean"] = (
+    services_engine["Status"]
+    .astype(str)
+    .str.strip()
+    .str.replace(r"\s+", " ", regex=True)
+    .str.lower()
+)
+
+services_engine["is_no_show_cancel"] = (
+    (services_engine["Status Clean"] == "no show")
+    | (services_engine["Status Clean"].str.startswith("cancel"))
+)
+
 no_show_cancel_rows = services_engine[services_engine["is_no_show_cancel"]].copy()
 
 non_billable_client_keys = set(non_billable_rows["client_key"])
