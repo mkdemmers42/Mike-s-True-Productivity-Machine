@@ -386,8 +386,8 @@ success_rows = services_engine[
 ].copy()
 billable_rows = services_engine[services_engine["is_billable"]].copy()
 
-services_engine["Status Clean"] = (
-    services_engine["Status"]
+services_engine["status_clean"] = (
+    services_engine["status"]
     .astype(str)
     .str.strip()
     .str.replace(r"\s+", " ", regex=True)
@@ -395,8 +395,8 @@ services_engine["Status Clean"] = (
 )
 
 services_engine["is_no_show_cancel"] = (
-    (services_engine["Status Clean"] == "no show")
-    | (services_engine["Status Clean"].str.startswith("cancel"))
+    (services_engine["status_clean"] == "no show")
+    | (services_engine["status_clean"].str.startswith("cancel"))
 )
 
 no_show_cancel_rows = services_engine[services_engine["is_no_show_cancel"]].copy()
