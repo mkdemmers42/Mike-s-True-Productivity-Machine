@@ -409,7 +409,10 @@ billable_rows = services_engine[
 ].copy()
 billable_rows["county_minutes"] = billable_rows.apply(
     lambda r: calculate_county_minutes(r["duration_minutes"])
-    if r["modifier"] != "SC"
+    if (
+        r["modifier"] != "SC"
+        and r["is_successful_engagement_procedure"]
+    )
     else 0,
     axis=1,
 )
