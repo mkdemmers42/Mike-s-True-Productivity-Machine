@@ -284,6 +284,12 @@ def calculate_units(minutes: float, modifier: str) -> Tuple[int, int, str]:
     return units, productive_minutes, "Default grid"
 
 
+def calculate_county_minutes(minutes: float) -> int:
+    """County Minutes always follow the Standard Productivity Grid."""
+    _, county_minutes = calculate_from_grid(minutes, DEFAULT_UNIT_GRID)
+    return county_minutes
+
+
 def build_caseload_clients(caseload_df: pd.DataFrame) -> pd.DataFrame:
     names = get_col_by_index(caseload_df, 0, "A / Name")
     out = pd.DataFrame({"client_name": names.map(clean_text)})
@@ -401,6 +407,7 @@ billable_rows = services_engine[
     (services_engine["is_billable"])
     & (services_engine["status_clean"] == "complete")
 ].copy()
+billable_rows["county_minutes"] = billable_rows["duration_minutes"].map(calculate_county_minutes)
 
 services_engine["status_clean"] = (
     services_engine["status"]
@@ -447,6 +454,7 @@ minutes_billed = float(billable_rows["duration_minutes"].sum())
 non_billable_total = float(non_billable_rows["duration_minutes"].sum())
 units_billed = int(billable_rows["calculated_units"].sum())
 productive_minutes_total = int(billable_rows["productive_minutes"].sum())
+county_minutes_total = int(billable_rows["county_minutes"].sum())
 
 billable_minutes_pct = safe_percent(minutes_billed, minutes_worked)
 non_billable_pct = safe_percent(non_billable_total, minutes_worked)
@@ -494,9 +502,11 @@ with mrow1[2]:
 with mrow1[3]:
     metric_card("Billable Minutes %", f"{fmt_number(billable_minutes_pct, 2)}%", "Minutes billed ÷ minutes worked")
 
-mrow2 = st.columns(4)
+mrow2 = st.columns(5)
 with mrow2[0]:
     metric_card("Units Billed", fmt_int(units_billed), "App-calculated, Column K ignored")
+with mrow2[1]:
+    metric_card("County Minutes", fmt_int(county_minutes_total), "Standard grid minutes")
 with mrow2[1]:
     metric_card("Billable Units %", f"{fmt_number(billable_units_pct, 2)}%", "Productive minutes ÷ minutes worked")
 with mrow2[2]:
@@ -504,15 +514,17 @@ with mrow2[2]:
 with mrow2[3]:
     metric_card("Non-Billable %", f"{fmt_number(non_billable_pct, 2)}%", "Non-billable minutes ÷ minutes worked")
 
-mrow3 = st.columns(4)
-with mrow3[0]:
-    metric_card("Documentation Total", "Pending", "Placeholder for future logic")
-with mrow3[1]:
-    metric_card("Documentation %", "Pending", "Placeholder for future logic")
-with mrow3[2]:
-    metric_card("Travel Total", "Pending", "Placeholder for future logic")
-with mrow3[3]:
-    metric_card("Travel %", "Pending", "Placeholder for future logic")
+mrow2 = st.columns(5)
+with mrow2[0]:
+    metric_card("Units Billed", fmt_int(units_billed), "App-calculated, Column K ignored")
+with mrow2[1]:
+    metric_card("County Minutes", fmt_int(county_minutes_total), "Standard grid minutes")
+with mrow2[2]:
+    metric_card("Billable Units %", f"{fmt_number(billable_units_pct, 2)}%", "Productive minutes ÷ minutes worked")
+with mrow2[3]:
+    metric_card("Non-Billable Total", fmt_number(non_billable_total, 1), "Non-billable minutes, Column M")
+with mrow2[4]:
+    metric_card("Non-Billable %", f"{fmt_number(non_billable_pct, 2)}%", "Non-billable minutes ÷ minutes worked")
 
 
 # ================================================================
