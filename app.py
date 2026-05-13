@@ -507,18 +507,6 @@ with mrow2[0]:
     metric_card("Units Billed", fmt_int(units_billed), "App-calculated, Column K ignored")
 with mrow2[1]:
     metric_card("County Minutes", fmt_int(county_minutes_total), "Standard grid minutes")
-with mrow2[1]:
-    metric_card("Billable Units %", f"{fmt_number(billable_units_pct, 2)}%", "Productive minutes ÷ minutes worked")
-with mrow2[2]:
-    metric_card("Non-Billable Total", fmt_number(non_billable_total, 1), "Non-billable minutes, Column M")
-with mrow2[3]:
-    metric_card("Non-Billable %", f"{fmt_number(non_billable_pct, 2)}%", "Non-billable minutes ÷ minutes worked")
-
-mrow2 = st.columns(5)
-with mrow2[0]:
-    metric_card("Units Billed", fmt_int(units_billed), "App-calculated, Column K ignored")
-with mrow2[1]:
-    metric_card("County Minutes", fmt_int(county_minutes_total), "Standard grid minutes")
 with mrow2[2]:
     metric_card("Billable Units %", f"{fmt_number(billable_units_pct, 2)}%", "Productive minutes ÷ minutes worked")
 with mrow2[3]:
