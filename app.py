@@ -407,7 +407,12 @@ billable_rows = services_engine[
     (services_engine["is_billable"])
     & (services_engine["status_clean"] == "complete")
 ].copy()
-billable_rows["county_minutes"] = billable_rows["duration_minutes"].map(calculate_county_minutes)
+billable_rows["county_minutes"] = billable_rows.apply(
+    lambda r: calculate_county_minutes(r["duration_minutes"])
+    if r["modifier"] != "SC"
+    else 0,
+    axis=1,
+)
 
 services_engine["status_clean"] = (
     services_engine["status"]
